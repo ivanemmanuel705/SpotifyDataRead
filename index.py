@@ -1,9 +1,9 @@
 import base64
-import os
-from dotenv import load_dotenv
+import json
+
 import requests
-load_dotenv('.env')
-CLIENT=os.getenv('CLIENT')
+
+CLIENT='ffa1d09e53ae4057bb5907ff6110b62c'
 CLIENT_SECRET='65c355ca1df048f0955a5bf5f83252c3'
 
 # creating a token for spotify
@@ -34,12 +34,19 @@ def get_new_release():
             # print(response.json())
             data=response.json()
             albums=data['albums']['items']
-            for i in albums:
-                a={
-                    'albums_name':i['name'],
-                    'Release_date':i['release_date']
-                }
-                print(a)
+            for album in albums:
+            
+                    info = {
+                        'album_name': album['name'],
+                        'artist_name': album['artists'][0]['name'],
+                        'release_date': album['release_date'],
+                        'album_type': album['album_type'],
+                        'total_tracks': album['total_tracks'],
+                        'spotify_url': album['external_urls']['spotify'],
+                        'album_image': album['images'][0]['url'] if album['images'] else None
+                    }
+                    print(json.dumps(info, indent=2))
+
     except Exception as e:
      print("ERROR in latest release data fetching...",e)
 get_new_release()
